@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Bitcoin Converter</string>
+    <string name="greeting">Hi, </string>
+    <string name="prompt">Currency to convert to</string>
+    <string name="namePrompt">What\'s your name?</string>
+    <string name="nameHint">Name</string>
 
     <string-array name="currency_array">
         <item>AUD</item>

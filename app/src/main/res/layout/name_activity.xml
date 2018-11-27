@@ -11,7 +11,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What's your name?"
+        android:text="@string/namePrompt"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.325"
@@ -37,7 +37,7 @@
             android:id="@+id/nameInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
+            android:hint="@string/nameHint"
             />
     </android.support.design.widget.TextInputLayout>
 
@@ -58,6 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.99"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/round_arrow_forward_24px"/>
+        app:srcCompat="@drawable/round_arrow_forward_24px"
+        android:focusable="true"/>
 
 </android.support.constraint.ConstraintLayout>
