@@ -48,8 +48,10 @@ public class NameActivity extends AppCompatActivity {
 
     // initialize button, text input and UI effect
     private void setUpUI(){
+        // set up button
         nextButton = findViewById(R.id.nextButton);
         nextButton.hide();
+
         nameInputField = findViewById(R.id.nameInput);
         nameInputField.addTextChangedListener(new TextWatcher() {
             @Override
