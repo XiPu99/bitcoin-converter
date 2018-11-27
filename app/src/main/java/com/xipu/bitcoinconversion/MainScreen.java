@@ -18,14 +18,17 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final String DEFAULT_TAG = "DEFAULT";
+    public static final String PRICE_STRING_TAG = "Price";
+    public static final String CURRENCY_TAG = "Cur";
     public static final String URL = "https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=%s&amount=%s";
     public static final String PRICE_TO_CONVERT = "1";
-    private static boolean isInit = false;
+    private static boolean hasInit;
     SharedPreferences mSharedPreferences;
     TextView greetingText;
 
@@ -34,6 +37,7 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
+        /* set up spinner */
         Spinner spinner = findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -48,17 +52,19 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
         greetingText = findViewById(R.id.greeting);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         greetingText.append(mSharedPreferences.getString(NameActivity.NAME_TAG, DEFAULT_TAG));
+        Log.d("Price", "Called again");
 
-        Log.d("Price", String.format(URL, "USD", PRICE_TO_CONVERT));
-
-//        goToResultScreen("https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=USD&amount=2");
+        /* set the boolean flag for listener to distinguish between calls by system's
+           initialization or by users' selection */
+        hasInit = false;
     }
 
-    private void getResultAndGoToResultScreen(String targetCurrency, String priceToConvert) {
+    private void getResultAndGoToResultScreen(final String targetCurrency, String priceToConvert) {
 
         // build the url for API calls
         String url = String.format(URL, targetCurrency, priceToConvert);
 
+        // make the API call
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
             @Override
@@ -66,7 +72,7 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
                 Log.d("Bitcoin", "JSON: " + response.toString());
                 try {
                     double price = response.getDouble("price");
-                    goToResultScreen(price);
+                    goToResultScreen(price, targetCurrency);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -83,10 +89,11 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
 
     }
 
-    private void goToResultScreen(double price){
-        isInit = false;
+    private void goToResultScreen(double price, String cur){
+        // pass the calculated converted price along with the intent
         Intent intent = new Intent(this, ResultScreen.class);
-        intent.putExtra("Price", price);
+        intent.putExtra(PRICE_STRING_TAG, price);
+        intent.putExtra(CURRENCY_TAG, cur);
         startActivity(intent);
     }
 
@@ -96,8 +103,8 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
             use a boolean flag to distinguish between calls by system's
             initialization or by users' selection
          */
-        if(!isInit){
-            isInit = true;
+        if(!hasInit){
+            hasInit = true;
         }
         else{
             String cur = adapterView.getItemAtPosition(pos).toString();
