@@ -84,6 +84,7 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     private void goToResultScreen(double price){
+        isInit = false;
         Intent intent = new Intent(this, ResultScreen.class);
         intent.putExtra("Price", price);
         startActivity(intent);

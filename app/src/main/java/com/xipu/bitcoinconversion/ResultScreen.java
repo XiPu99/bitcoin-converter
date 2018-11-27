@@ -21,11 +21,14 @@ public class ResultScreen extends AppCompatActivity {
         priceTextView.setText(String.valueOf(price));
     }
 
-
-
+    // direct users to the main screen upon reentering the app
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onRestart() {
+        super.onRestart();
+        goToMainScreen();
+    }
+
+    private void goToMainScreen(){
         Intent intent = new Intent(this, MainScreen.class);
         startActivity(intent);
     }
