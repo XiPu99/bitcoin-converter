@@ -26,7 +26,7 @@ public class NameActivity extends AppCompatActivity {
 
         // check to see if users enter the app for the first time
         if(!mSharedPreferences.contains(NAME_TAG)){
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.name_activity);
             setUpUI();
         }
         else{
