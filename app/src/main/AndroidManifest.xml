@@ -21,6 +21,10 @@
         <activity android:name=".MainScreen">
         </activity>
 
+        <activity android:name=".ResultScreen">
+
+        </activity>
+
     </application>
 
 </manifest>

@@ -36,6 +36,7 @@ public class NameActivity extends AppCompatActivity {
 
     }
 
+
     // on click method for the floating action button
     public void goToMainScreen(View v){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -73,5 +74,7 @@ public class NameActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 }

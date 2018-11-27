@@ -1,5 +1,6 @@
 package com.xipu.bitcoinconversion;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -26,13 +27,13 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
     public static final String PRICE_TO_CONVERT = "1";
     private static boolean isInit = false;
     SharedPreferences mSharedPreferences;
+    TextView greetingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Spinner spinner = findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -42,25 +43,30 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        TextView textView = findViewById(R.id.greeting);
-        textView.append(mSharedPreferences.getString(NameActivity.NAME_TAG, DEFAULT_TAG));
+
+        // retrieve and display user's name
+        greetingText = findViewById(R.id.greeting);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        greetingText.append(mSharedPreferences.getString(NameActivity.NAME_TAG, DEFAULT_TAG));
 
         Log.d("Price", String.format(URL, "USD", PRICE_TO_CONVERT));
 
-        letsDoSomeNetworking("https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=USD&amount=2");
+//        goToResultScreen("https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=USD&amount=2");
     }
 
-    private void letsDoSomeNetworking(String url) {
+    private void getResultAndGoToResultScreen(String targetCurrency, String priceToConvert) {
+
+        // build the url for API calls
+        String url = String.format(URL, targetCurrency, priceToConvert);
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //super.onSuccess(statusCode, headers, response);
                 Log.d("Bitcoin", "JSON: " + response.toString());
                 try {
                     double price = response.getDouble("price");
-                    Log.d("Price", String.valueOf(price));
+                    goToResultScreen(price);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -77,6 +83,12 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
 
     }
 
+    private void goToResultScreen(double price){
+        Intent intent = new Intent(this, ResultScreen.class);
+        intent.putExtra("Price", price);
+        startActivity(intent);
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
         /*
@@ -87,7 +99,8 @@ public class MainScreen extends AppCompatActivity implements AdapterView.OnItemS
             isInit = true;
         }
         else{
-            Log.d("Price", adapterView.getItemAtPosition(pos).toString());
+            String cur = adapterView.getItemAtPosition(pos).toString();
+            getResultAndGoToResultScreen(cur, PRICE_TO_CONVERT);
         }
     }
 
