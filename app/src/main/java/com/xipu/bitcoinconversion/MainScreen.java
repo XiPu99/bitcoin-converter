@@ -29,31 +29,32 @@ public class MainScreen extends AppCompatActivity {
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Spinner spinner = findViewById(R.id.spinner);
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.currency_array, R.layout.spinner_item);
+//        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.currency_array, R.layout.spinner_item);
 
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+//        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+//        spinner.setAdapter(adapter);
 
         TextView textView = findViewById(R.id.greeting);
         textView.append(mSharedPreferences.getString(NameActivity.NAME_TAG, DEFAULT_TAG));
+
+        letsDoSomeNetworking("https://apiv2.bitcoinaverage.com/convert/global?from=BTC&to=USD&amount=2");
     }
 
     private void letsDoSomeNetworking(String url) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(url, new JsonHttpResponseHandler() {
-
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 //super.onSuccess(statusCode, headers, response);
                 Log.d("Bitcoin", "JSON: " + response.toString());
                 try {
-                    String price = response.getString("last");
+                    double price = response.getDouble("price");
+                    Log.d("Price", String.valueOf(price));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -66,8 +67,6 @@ public class MainScreen extends AppCompatActivity {
                 Log.d("Bitcoin", "Fail response: " + errorResponse);
                 Log.e("ERROR", throwable.toString());
             }
-
-
         });
 
 
